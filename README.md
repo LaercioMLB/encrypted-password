@@ -1,2 +1,28 @@
-# encrypted-password
-Trabalho para entrega de atividade 4º Período de engenharia de software, Uniamérica. 
+## TENHA PYTHON INSTALADO NA MAQUINA E ADICIONADO NAS VARIAVEIS DO SISTEMA - VERSAO PYTHON UTILIZADO 3.8.6
+
+#  CLONE O PROJETO
+git clone "projeitnhoqueestanorepositoriodoqueridaoai"
+
+# ENTRE NA PASTA DO PROJETO
+cd pastadoprojeto
+
+# DENTRO DA PASTA DO PROJETO RODE ESTE COMANDO PARA HABILITAR O VIRTUAL ENV DO PYTHON (SERVIDOR PARA INSTALAÇÃO DAS DEPENDECIAS):
+python -m venv venv
+
+# DEPOIS RODE PARA ATIVAR O AMBIENTE VIRTUAL DO PYTHON:
+venv\Scripts\activate
+
+# INSTALE TODAS AS DEPENDECIAS DO PROJETO COM:
+pip install -r requirements.txt
+
+# PARA INICIAR AS MIGRATIONS:
+python manage.py makemigrations
+
+# INICIALIZAR O BANCO H2 DO DJANGO RODE:
+python manage.py migrate
+
+# PARA INICIAR O SERVIDOR DO DJANGO RODE: 
+python manage.py runserver
+
+# ACESSE NO NAVEGADOR:
+http://127.0.0.1:8000/
