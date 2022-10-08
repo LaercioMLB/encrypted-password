@@ -1,0 +1,393 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+  
+h1{
+  font-size: 30px;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 300;
+  text-align: center;
+  margin-bottom: 15px;
+}
+.tbl-header{
+  background-color: #000;
+ }
+.tbl-content{
+  overflow-x:auto;
+  margin-top: 0px;
+}
+th{
+  padding: 25px 20px;
+  text-align: left;
+  font-weight: 500;
+  font-size: 17px;
+  color: #fff;
+  text-transform: uppercase;
+}
+td{
+  padding: 15px;
+  word-wrap:break-word;
+  max-width: 200px;
+  text-align: left;
+  vertical-align:middle;
+  font-weight: 300;
+  font-size: 16px;
+  color: #fff;
+  border-bottom: solid 1px rgba(255,255,255,0.1);
+}
+
+/* demo styles */
+
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700);
+body{
+  background: -webkit-linear-gradient(left, #25c481, #25b7c4);
+  background: linear-gradient(to right, #25c481, #25b7c4);
+  font-family: 'Roboto', sans-serif;
+}
+section{
+  margin: 50px;
+}
+
+
+/* for custom scrollbar for webkit browser*/
+
+::-webkit-scrollbar {
+    width: 6px;
+} 
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+} 
+::-webkit-scrollbar-thumb {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+}
+</style>
+
+<section>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <button type="button" class="btn btn-dark float-start" onclick="modal_create_password()" style="width:300px;">
+          Adicionar Nova Senha
+        </button>
+      </div>
+      <div class="col">
+        <input type="text" id="mylnput" class="form-control float-end" onkeyup="search()" placeholder="Search" style="width:400px;">
+      </div>
+    </div>
+  </div>
+
+  <div class="tbl-content mt-4">
+    <table class="table table-dark shadow-lg p-3 mb-5 bg-body rounded" id="myTable">
+      <thead class="tbl-header">
+        <tr>
+          <th>Site</th>
+          <th>Descrição</th>
+          <th>Username</th>
+          <th>Senha</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for senha in passwords %}
+          <tr>
+            <td>{{senha.url}}</td>
+            <td>{{senha.descricao}}</td>
+            <td>{{senha.username}}</td>
+            <td>{{senha.senha}}</td>
+            <td>
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                <span>Action</span>
+              </button>
+              <div class="dropdown-menu dropdown-menu-right">
+                <button class="dropdown-item" onclick="buscar_dados_senha({{senha.id}}, 'view')">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                    <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                    <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                  </svg>
+                  View
+                </button>
+                <button class="dropdown-item" onclick="buscar_dados_senha({{senha.id}}, 'update')">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                    <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+                  </svg>
+                  Edit
+                </button>
+                <button class="dropdown-item" onclick="modal_delete_password({{senha.id}})">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                    <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                  </svg>
+                  Remove
+                </button>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<div class="modal fade" id="modalNewPassword" tabindex="-1" role="dialog" aria-labelledby="modalNewPasswordLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="modalNewPasswordLabel">Cadastrar uma Nova Senha</h5>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form method="POST" action="{% url 'create_new_password' %}">
+                {% csrf_token %}
+
+                <div class="form-row mt-1">
+                    <div class="col-12 col-sm-12">
+                        <label class="font-weight-bold" for="new_site">Site:</label>
+                        <input type="text" id="new_site" name="url" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-row mt-4">
+                    <div class="col-12 col-sm-12">
+                      <label class="font-weight-bold" for="new_password">Senha:</label>
+                      <input type="text" id="new_password" name="senha" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-row mt-4">
+                    <div class="col-12 col-sm-12">
+                        <label class="font-weight-bold" for="new_username">Username:</label>
+                        <input type="text" id="new_username" name="username" class="form-control">
+                    </div>
+                </div>
+                <div class="form-row mt-4">
+                    <div class="col-12 col-sm-12">
+                        <label class="font-weight-bold" for="new_descricao">Descrição:</label>
+                        <textarea id="new_descricao" name="descricao" class="form-control" placeholder="Descrição:" rows="6" cols="40"></textarea>
+                    </div>
+                </div>
+                <button class="btn btn-outline-success float-right mt-5"> 
+                    <strong>Cadastrar Senha</strong>
+                </button>
+            </form>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalViewPassword" tabindex="-1" role="dialog" aria-labelledby="modalViewPasswordLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="modalViewPasswordLabel">Visualizar Esta Senha</h5>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-row mt-1">
+                <div class="col-12 col-sm-12">
+                    <label class="font-weight-bold" for="view_site">Site:</label>
+                    <input type="text" id="view_site" name="url" class="form-control" readonly>
+                </div>
+            </div>
+            <div class="form-row mt-4">
+              <div class="col-12 col-sm-12">
+                  <label class="font-weight-bold" for="view_password">Senha:</label>
+                  <input type="password" id="view_password" name="senha" class="form-control" readonly>
+              </div>
+              <input type="checkbox" class="btn-check" id="check_view" autocomplete="off">
+              <label class="btn btn-outline-primary mt-3" for="check_view" onclick="mostrarSenha('check_view', 'view_password')">Mostrar Senha</label><br>
+            </div>
+            <div class="form-row mt-4">
+                <div class="col-12 col-sm-12">
+                    <label class="font-weight-bold" for="view_username">Username:</label>
+                    <input type="text" id="view_username" name="username" class="form-control" readonly>
+                </div>
+            </div>
+            <div class="form-row mt-4">
+                <div class="col-12 col-sm-12">
+                    <label class="font-weight-bold" for="view_descricao">Descrição:</label>
+                    <textarea id="view_descricao" name="descricao" class="form-control" placeholder="Descrição:" rows="6" cols="40" readonly></textarea>
+                </div>
+            </div>
+            <button class="btn btn-outline-success float-right mt-5"> 
+                <strong>Cadastrar Senha</strong>
+            </button>
+        </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="modalUpdatePassword" tabindex="-1" role="dialog" aria-labelledby="modalUpdatePasswordLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalUpdatePasswordLabel">Alterar Esta Senha</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="{% url 'update_password' %}">
+            {% csrf_token %}
+            <div id="error_excessao"></div>
+            <input type="text" id="id_senha_db" name="id_senha" hidden>
+
+            <div class="form-row mt-1">
+                <div class="col-12 col-sm-12">
+                    <label class="font-weight-bold" for="update_site">Site:</label>
+                    <input type="text" id="update_site" name="url" class="form-control" required>
+                </div>
+            </div>
+            <div class="form-row mt-4">
+              <div class="col-12 col-sm-12">
+                  <label class="font-weight-bold" for="update_password">Senha:</label>
+                  <input type="password" id="update_password" name="senha" class="form-control" required>
+              </div>
+              <input type="checkbox" class="btn-check" id="check_update" autocomplete="off">
+              <label class="btn btn-outline-primary mt-3" for="check_update" onclick="mostrarSenha('check_update', 'update_password')">Mostrar Senha</label><br>
+            </div>
+            <div class="form-row mt-4">
+                <div class="col-12 col-sm-12">
+                    <label class="font-weight-bold" for="update_username">Username:</label>
+                    <input type="text" id="update_username" name="username" class="form-control">
+                </div>
+            </div>
+            <div class="form-row mt-4">
+                <div class="col-12 col-sm-12">
+                    <label class="font-weight-bold" for="update_descricao">Descrição:</label>
+                    <textarea id="update_descricao" name="descricao" class="form-control" placeholder="Descrição:" rows="6" cols="40"></textarea>
+                </div>
+            </div>
+            <button class="btn btn-outline-success float-right mt-5"> 
+                <strong>Alterar Senha</strong>
+            </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalDeletePassword" tabindex="-1" role="dialog" aria-labelledby="modalDeletePasswordLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalDeletePasswordLabel">Deseja Deletar Esta Senha?</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-footer">
+        <button id="btn_deletar_senha" type="button" class="btn mb-2 btn-outline-danger float-end">Deletar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+  function modal_create_password(){
+      var myModal = new bootstrap.Modal(document.getElementById('modalNewPassword'))
+      document.getElementById('new_site').value = ''
+      document.getElementById('new_password').value = ''
+      document.getElementById('new_username').value = ''
+      document.getElementById('new_descricao').value = ''
+      myModal.toggle()
+  }
+
+  function modal_view_password(dados){
+      var myModal = new bootstrap.Modal(document.getElementById('modalViewPassword'))
+      document.getElementById('view_password').type = 'password'
+      document.getElementById('view_site').value = dados.url
+      document.getElementById('view_password').value = dados.senha
+      document.getElementById('view_username').value = dados.username
+      document.getElementById('view_descricao').value = dados.descricao
+      document.getElementById('check_view').checked = false;
+      myModal.toggle()
+  }
+
+  function modal_update_password(dados){
+      var myModal = new bootstrap.Modal(document.getElementById('modalUpdatePassword'))
+      document.getElementById('update_password').type = 'password'
+      document.getElementById('id_senha_db').value = dados.id
+      document.getElementById('update_site').value = dados.url
+      document.getElementById('update_username').value = dados.username
+      document.getElementById('update_descricao').value = dados.descricao
+      document.getElementById('update_password').value = dados.senha
+      document.getElementById('check_update').checked = false;
+      myModal.toggle()
+  }
+
+  function modal_delete_password(id_senha){
+      var myModal = new bootstrap.Modal(document.getElementById('modalDeletePassword'))
+      document.getElementById('btn_deletar_senha').setAttribute('onclick', `deletar_senha(${id_senha})`)
+      myModal.toggle()
+  }
+
+  function deletar_senha(id_senha){
+    $.ajax({
+      url : "{% url 'delete_password' %}",
+      type: 'POST',
+      data: {
+          id_senha,
+          csrfmiddlewaretoken: '{{ csrf_token }}'
+      },
+      success: function(data){
+        window.location.href = "{% url 'index' %}";
+      },
+    })
+  }
+
+  function buscar_dados_senha(id_senha, type){
+    $.ajax({
+      url : "{% url 'view_password' %}",
+      type: 'POST',
+      data: {
+          id_senha,
+          csrfmiddlewaretoken: '{{ csrf_token }}'
+      },
+      success: function(data){
+        if (type == 'view'){
+          modal_view_password(data)
+        }else{
+          modal_update_password(data)
+        }
+      },
+    })
+  }
+
+  function mostrarSenha(id_check, id_input_password){
+    check = document.getElementById(id_check)
+    if (check.checked){
+      document.getElementById(id_input_password).type = 'password'
+    }else{
+      document.getElementById(id_input_password).type = 'text'
+    }
+
+  }
+
+  function search(){
+    var input, filter, table, tr, td, i, txtVa1ue;
+    input = document.getElementById("mylnput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++){
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1){
+                tr[i].style.display = "";
+            }else{
+                tr[i].style.display = "none";
+            }
+        }
+    }
+  }
+</script>
+
+{% endblock %}
